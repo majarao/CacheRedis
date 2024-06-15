@@ -1,0 +1,29 @@
+version: '3.4'
+name: cacheredis_container
+services:
+  cacheredis:
+    container_name: cacheredis
+    image: ${DOCKER_REGISTRY-}cacheredis
+    build:
+      context: .
+      dockerfile: CacheRedis/Dockerfile
+    depends_on:
+      - sqlserver
+      - redis
+  sqlserver:
+    container_name: sqlserver
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    hostname: 'sqlserver'
+    environment:
+      ACCEPT_EULA: 'Y'
+      SA_PASSWORD: "yourStrong(!)Password"
+    ports:
+      - '1433:1433'    
+    expose:
+      - 1433
+  redis:
+    container_name: redis
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
